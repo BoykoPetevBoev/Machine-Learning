@@ -23,7 +23,7 @@ model.add(layers.Dense(512, activation="relu"))
 model.add(layers.Dense(256, activation="relu"))
 model.add(layers.Dense(10))
 print(model.summary())
-sys.exit()
+# sys.exit()
 
 model.compile(
     loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),

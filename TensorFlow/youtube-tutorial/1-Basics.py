@@ -12,15 +12,15 @@ x = tf.range(start=1, limit=10, delta=2)
 
 # Mathematical Operations
 print("- Mathematical Operations")
-x = tf.constant([1, 2, 3])
+x = tf.constant([1, 2, 3])  
 y = tf.constant([9, 8, 7])
-z = tf.add(x, y)
+z = tf.add(x, y) # z = x + y
 print(z)
-z = tf.subtract(x, y)
+z = tf.subtract(x, y) # z = x - y
+print(z) 
+z = tf.divide(x, y) # z = x / y
 print(z)
-z = tf.divide(x, y)
-print(z)
-z = tf.multiply(x, y)
+z = tf.multiply(x, y) # z = x * y
 print(z)
 
 # Indexing
