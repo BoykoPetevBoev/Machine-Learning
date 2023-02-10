@@ -24,8 +24,6 @@ model = keras.Sequential([
 print(model.summary())
 
 # Functional API
-
-
 def my_model():
     inputs = keras.Input(shape=(32, 32, 3))
 
