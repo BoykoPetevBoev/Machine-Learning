@@ -3,39 +3,57 @@ import normalizators
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
 import asyncio
-
 
 tf.config.run_functions_eagerly(True)
 window_size = 50
 
-
 def setup_model():
-    # Load historical chart data
-    data = service.get_forex_data()
-    x_train, y_train, x_test, y_test = normalizators.normalize_forex_data(data)
+    train_data = service.get_forex_train_data()
+    x_train, y_train = normalizators.normalize_forex_data(train_data)
 
-    print(len(x_train), len(y_train), len(x_test), len(y_test))
-    # set the window size
-    # print(normalized_data)
-    #
+    test_data = service.get_forex_test_data()
+    x_test, y_test = normalizators.normalize_forex_data(test_data)
+    
+    predict_data = service.get_forex_predict_data()
+    x_predict, y_predict = normalizators.normalize_forex_data(predict_data)
+    
+    
 
-    # define model architecture
-    model = Sequential()
-    model.add(LSTM(128, input_shape=(window_size, 4), return_sequences=True))
-    model.add(LSTM(64))
-    model.add(Dense(1, activation='relu'))
+    model = tf.keras.Sequential([
+        tf.keras.layers.Dense(units=32, input_shape=(50,1), activation='relu'),
+        tf.keras.layers.Dense(units=1)
+    ])
+    
+    model.compile(
+        optimizer=Adam(0.001), 
+        loss='mean_squared_error'
+    )
 
-    model.summary()
-
-    # compile the model
-    model.compile(optimizer='adam', loss='binary_crossentropy',
-                  metrics=['binary_accuracy'], run_eagerly=True)
-
-    # train the model
-    model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+    model.fit(
+        x_train, 
+        y_train,
+        epochs=50,
+        batch_size=16,
+        validation_split=0.1,
+        shuffle=False
+    )
+    
+    result = model.evaluate(
+        x_test, 
+        y_test, 
+        batch_size=16, 
+        verbose=2
+    )
+    print('Result:', result)
+    
+    predictions = model.predict(x_predict)
+    
+    print(predictions)
+    
     return model
 
 
